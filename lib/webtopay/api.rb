@@ -42,6 +42,10 @@ module WebToPay
                       [ :test,           1,      false,  true,   true,   /^[01]$/ ],
                       [ :version,        9,      true,   false,  true,   /^\d+\.\d+$/ ] ]
 
+    # TODO: New webtopay version insludes folowing fields. Investigate if we need that
+    #["only_payments", "disalow_payments", "test", "time_limit", "personcode", "developerid"]
+
+
     # Array structure:
     # * name       – request item name.
     # * maxlen     – max allowed value for item.
