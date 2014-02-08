@@ -1,7 +1,7 @@
 module WebToPayController
   module ClassMethods
     def webtopay(*actions)
-      options = actions.any? ? {} : {only: actions}
+      options = actions.any? ? { only: actions } : {}
       before_filter :webtopay_check, options
       
       attr_reader :webtopay_response
