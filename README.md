@@ -11,7 +11,7 @@ This gem could be integrated with both billing types - MACRO (VISA, MasterCard, 
 Add to your gemfile:
 
 ```ruby
-gem "webtopay", branch: 'rails4'
+gem "webtopay", github: 'bloomrain'
 ```
 
 ## Configuration
@@ -45,8 +45,6 @@ These code slices will protect your controller actions, which work with webtopay
 ****** Usage for MICRO and MACRO billing on controller:
 
 ```ruby
-[........]
-
   webtopay :activate_user, :confirm_cart # You can add here as many actions as you want
 
   def activate_user
@@ -58,21 +56,15 @@ These code slices will protect your controller actions, which work with webtopay
     # write here code which do some stuff
     render :text => "ok" # it sends successful answer to webtopay.com crawler
   end
-  
-[........]
 ```
 
 ****** You can also use helper method to generate required form for MACRO billing query:
 
 ```ruby
-[........]
-
 <% macro_form test: 1, orderid: 123, amount: 2000, payment: 'vb', :country => 'lt', :paytext => "Billing for XX at the website XXX" do %>
   Select paying method: <%= select_tag(:payment, options_for_select(['', 'vb', 'hanza', 'nord', 'snoras'])) %>
   <%= submit_tag "test paying" %>
 <% end %>
-
-[........]
 ```
 
 * Attention!!! Be sure that you have set required option, which let sending test requests, at your webtopay.com account settings  at first if you want to use test requests.
