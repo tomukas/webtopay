@@ -1,10 +1,11 @@
 require 'digest/md5'
 require 'openssl'
 require 'open-uri'
+require "base64"
 
 module WebToPay
   class Api
-    VERSION       = "1.2"
+    VERSION       = "1.6"
     PREFIX        = "wp_"
     CERT_PATH     = "http://downloads.webtopay.com/download/public.key"
     
@@ -37,10 +38,10 @@ module WebToPay
                       [ :p_state,        20,     false,  true,   true,   '' ],
                       [ :p_zip,          20,     false,  true,   true,   '' ],
                       [ :p_countrycode,  2,      false,  true,   true,   /^[a-z]{2}$/i ],
-                      [ :sign,           255,    true,   false,  true,   '' ],
-                      [ :sign_password,  255,    true,   true,   false,  '' ],
+                      [ :sign_password,  255,    true,   false,   true,  '' ],
                       [ :test,           1,      false,  true,   true,   /^[01]$/ ],
                       [ :version,        9,      true,   false,  true,   /^\d+\.\d+$/ ] ]
+
 
     # TODO: New webtopay version insludes folowing fields. Investigate if we need that
     #["only_payments", "disalow_payments", "test", "time_limit", "personcode", "developerid"]
@@ -97,7 +98,7 @@ module WebToPay
                       [ :_ss1,            0,      true,   false,  true,  '' ],
                       [ :test,            0,      true,   false,  true,  '' ],
                       [ :key,             0,      true,   false,  true,  '' ],
-                      #[ :version,         9,      true,   false,  true,  /^\d+\.\d+$/ ] 
+                      #[ :version,         9,      true,   false,  true,  /^\d+\.\d+$/ ]
                       ]
 
     # Checks user given request data array.
@@ -109,7 +110,7 @@ module WebToPay
     #
     def self.check_request_data(data)
       request = {}
-      data.symbolize_keys!
+      data = data.with_indifferent_access
       
       REQUEST_SPECS.each do |spec|
         name, maxlen, required, user, isrequest, regexp = spec
@@ -152,26 +153,8 @@ module WebToPay
     
     # Puts signature on request data hash
     def self.sign_request(request, password)
-      fields = [ :projectid, :orderid, :lang, :amount, :currency,
-                 :accepturl, :cancelurl, :callbackurl, :payment, :country,
-                 :p_firstname, :p_lastname, :p_email, :p_street,
-                 :p_city, :p_state, :p_zip, :p_countrycode, :test,
-                 :version ]
-                  
-      request.symbolize_keys!
-      
-      data = ''
-      
-      fields.each do |key|
-        val = request[key].to_s
-        
-        unless val.strip.blank?
-          data+= sprintf("%03d", val.length) + val.downcase
-        end
-      end
-      
-      request[:sign] = Digest::MD5.hexdigest(data + password)
-      
+      data = build_query(request)
+      request[:sign] = sign(data, password)
       return request
     end
     
@@ -184,13 +167,30 @@ module WebToPay
     # keys are described here:
     # https://www.mokejimai.lt/makro_specifikacija.html
     def self.build_request(data)
-      data.symbolize_keys!
+      data = data.with_indifferent_access
       
       request           = self.check_request_data(data)
       request[:version] = self::VERSION
       request           = self.sign_request(request, data[:sign_password])
       
       return request 
+    end
+
+    def self.build_query(data)
+      query = []
+      data.each_pair do |field, value|
+        next if value.blank?
+        query << "#{field}=#{ CGI::escape value.to_s}"
+      end
+      query.join('&')
+    end
+
+    def self.base64_encode(query)
+      Base64.encode64(query).gsub("\n", '').gsub('/', '+').gsub('_', '-')
+    end
+
+    def self.sign(encoded_query, password)
+      Digest::MD5.hexdigest(encoded_query + password)
     end
     
     # Checks and validates response from WebToPay server.
