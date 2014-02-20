@@ -1,6 +1,7 @@
 require 'webtopay/exception'
 require 'webtopay/configuration'
 require 'webtopay/api'
+require 'webtopay/api_response'
 require 'webtopay_controller'
 require 'webtopay_helper'
 
