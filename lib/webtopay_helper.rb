@@ -1,24 +1,28 @@
 module WebToPayHelper
-  def macro_form(params, &block)
-    fields = {
-        :orderid => "1", :lang => 'LIT', :amount => 0, :currency => 'LTL',
-        :projectid => WebToPay.config.project_id,
-        :sign_password => WebToPay.config.sign_password,
-        :test => 0
-    }
+  def webtopay_form(params_or_request, form_options = {}, &block)
+    fields = { :lang => 'LIT', :currency => 'LTL', :projectid => WebToPay.config.project_id, :test => 0 }
 
-    fields.merge!(params)
-
-    request = WebToPay::Api.build_request(fields)
-
-    html = "<form action=\"https://www.mokejimai.lt/pay/\" method=\"post\" style=\"padding:0px;margin:0px\">"
-    request.each_pair do |field_name, field_value|
-      html << hidden_field_tag(field_name, field_value) unless field_value.nil?
+    if params_or_request.is_a(Hash)
+      fields = fields.merge(params_or_request)
+      request = WebToPay::ApiRequest.new(fields, sign_password: WebToPay.config.sign_password)
+    else
+      request = params_or_request
     end
-    html << capture(&block) if block_given?
 
-    html << "</form>"
-    html.html_safe
+    content_tag(:form, {action: webtopay_url, method: :post}.merge(form_options)) do
+      html = ''
+      WebToPay::ApiRequest::ATTRIBUTES.each do |field_name|
+        field_value = request.public_send(field_name)
+        html << hidden_field_tag(field_name, field_value) unless field_value.nil?
+      end
+      html << hidden_field_tag(:sign, request.sign)
+      html << capture(&block) if block_given?
+      html.html_safe
+    end
+  end
+
+  def webtopay_url
+    'https://www.mokejimai.lt/pay/'
   end
 end
 
