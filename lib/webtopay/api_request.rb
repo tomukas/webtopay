@@ -18,7 +18,7 @@ class WebToPay::ApiRequest
   def query
     @query ||= begin
       query = []
-      (ATTRIBUTES - [:version]).each do |field|
+      ATTRIBUTES.each do |field|
         value = self.public_send(field)
         next if value.blank?
         query << "#{field}=#{ CGI::escape value.to_s}"
