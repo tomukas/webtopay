@@ -62,12 +62,12 @@ These code slices will protect your controller actions, which work with webtopay
 
 You can generate payment form like this
 
-```ruby
+```erb
 <%= form_for WebToPay::Payment.new, url: order_products_path do |f| %>
   <%= f.text_field :p_name %>
   <%= f.text_field :p_surname %>
   <%= f.text_field :p_email %>
-  ... aony other fields you like (for complete field list please read mokejimai.lt api specification) ...
+  ... any other fields you like (for complete field list please read mokejimai.lt api specification) ...
   <%= f.submit "test paying" %>
 <% end %>
 ```
@@ -83,22 +83,12 @@ Then in your controller
   end
 ```
 
-```ruby
-<%= form_for @payment, url: your_payment_path do |f| %>
-  ... any fields you like to change before submiting ...
-  Select paying method: <%= select_tag(:payment, options_for_select(['', 'vb', 'hanza', 'nord', 'snoras'])) %>
-  <%= submit_tag "test paying" %>
-<% end %>
-```
-
-
 
 TODO
 ===========
 
 1. Write more clear documentation with real examples
 2. Write unit tests for each billing method (requires some testing data from https://www.webtopay.com/)
-3. Add more settings for controller filters
 
 ===========
 Copyright (c) 2009 Kristijonas Urbaitis, released under the MIT license
