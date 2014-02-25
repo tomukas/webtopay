@@ -43,12 +43,12 @@ describe WebToPay::Api do
       subject.build_query(request_data)
     }
 
-    let(:encoded_query) {
+    let(:data) {
       subject.base64_encode(query)
     }
 
     it 'should be correct' do
-      subject.sign(encoded_query, password).should == '723363940189b2b0536fa5adbda044de'
+      subject.sign(data, password).should == '723363940189b2b0536fa5adbda044de'
     end
   end
 end

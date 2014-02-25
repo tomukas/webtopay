@@ -1,12 +1,12 @@
 require 'webtopay/exception'
 require 'webtopay/configuration'
-require 'webtopay/api'
+require 'webtopay/payment'
 require 'webtopay/api_response'
-require 'webtopay/api_request'
 require 'webtopay_controller'
-require 'webtopay_helper'
 
 module WebToPay
+  API_VERSION = '1.6'
+
   class << self
     attr_accessor :config
 
@@ -18,5 +18,3 @@ module WebToPay
 end
 
 ActionController::Base.send(:include, WebToPayController)
-ActionView::Base.send(:include, WebToPayHelper)
-

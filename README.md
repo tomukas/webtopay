@@ -35,14 +35,14 @@ Add this to your controller:
 
 Or you can add this (it does the same as above):
 ```ruby
-  before_filter :webtopay_check, only:[:controller_method1, :controller_method2] ...
+  before_filter :webtopay, only:[:controller_method1, :controller_method2] ...
 ```
 
 ## Examples
 
 These code slices will protect your controller actions, which work with webtopay.com billing, against forgeries.
 
-****** Usage for MICRO and MACRO billing on controller:
+### Usage for MICRO and MACRO billing on controller.
 
 ```ruby
   webtopay :activate_user, :confirm_cart # You can add here as many actions as you want
@@ -58,17 +58,40 @@ These code slices will protect your controller actions, which work with webtopay
   end
 ```
 
-****** You can also use helper method to generate required form for MACRO billing query:
+### Payment form
+
+You can generate payment form like this
 
 ```ruby
-<% macro_form test: 1, orderid: 123, amount: 2000, payment: 'vb', :country => 'lt', :paytext => "Billing for XX at the website XXX" do %>
+<%= form_for WebToPay::Payment.new, url: order_products_path do |f| %>
+  <%= f.text_field :p_name %>
+  <%= f.text_field :p_surname %>
+  <%= f.text_field :p_email %>
+  ... aony other fields you like (for complete field list please read mokejimai.lt api specification) ...
+  <%= f.submit "test paying" %>
+<% end %>
+```
+
+Then in your controller
+```ruby
+  class ProductsController < ApplicationController
+    def order
+      # do some order stuff here ...
+      @payment = WebToPay::Payment(params[:web_to_pay_payment])
+      redirect_to @payment.url
+    end
+  end
+```
+
+```ruby
+<%= form_for @payment, url: your_payment_path do |f| %>
+  ... any fields you like to change before submiting ...
   Select paying method: <%= select_tag(:payment, options_for_select(['', 'vb', 'hanza', 'nord', 'snoras'])) %>
   <%= submit_tag "test paying" %>
 <% end %>
 ```
 
-* Attention!!! Be sure that you have set required option, which let sending test requests, at your webtopay.com account settings  at first if you want to use test requests.
-* You can add into the helper options additional parameters or remove them according to technical specifications at https://www.webtopay.com/ .
+
 
 TODO
 ===========

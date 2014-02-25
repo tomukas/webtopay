@@ -6,9 +6,9 @@ Gem::Specification.new do |s|
   s.name        = "webtopay"
   s.version     = Webtopay::VERSION
   s.platform    = Gem::Platform::RUBY
-  s.authors     = ["Laurynas Butkus", "Kristijonas Urbaitis"]
-  s.email       = ["laurynas.butkus@gmail.com", "kristis@micro.lt"]
-  s.homepage    = "https://github.com/laurynas/webtopay"
+  s.authors     = ["Povilas Jurčys", "Laurynas Butkus", "Kristijonas Urbaitis"]
+  s.email       = ["bloomrain@gmail.com", "laurynas.butkus@gmail.com", "kristis@micro.lt"]
+  s.homepage    = "https://github.com/bloomrain/webtopay"
   s.summary     = %q{Provides integration with http://www.webtopay.com (mokejimai.lt) payment system}
   s.description = %q{Verifies webtopay.com (mokejimai.lt) payment data transfer}
 

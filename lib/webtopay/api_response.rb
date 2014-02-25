@@ -117,7 +117,7 @@ class WebToPay::ApiResponse
 
     # *check* data
     if macro? && data[:version] !=
-      e = WebToPay::Exception.new("Incompatible library and data versions: libwebtopay #{WebToPay::Api::VERSION}, data #{data[:version]}",)
+      e = WebToPay::Exception.new("Incompatible library and data versions: libwebtopay #{WebToPay::API_VERSION}, data #{data[:version]}",)
       e.code = WebToPay::Exception::E_INVALID
       raise e
     end

@@ -1,12 +1,13 @@
-class WebToPay::ApiRequest
-  VERSION = '1.6'
-
+class WebToPay::Payment
   ATTRIBUTES = [:projectid, :orderid, :lang, :amount, :currency, :accepturl, :cancelurl, :callbackurl,
                 :country, :paytext, :p_email, :p_name, :p_surname, :payment, :test, :version]
   attr_accessor *ATTRIBUTES
 
-  def initialize(params, user_params = {})
-    self.version = WebToPay::ApiRequest::VERSION
+  extend ActiveModel::Naming
+  include ActiveModel::AttributeMethods
+
+  def initialize(params = {}, user_params = {})
+    self.version = WebToPay::API_VERSION
     self.projectid = WebToPay.config.project_id
     @sign_password = user_params[:sign_password] || WebToPay.config.sign_password
 
@@ -27,11 +28,18 @@ class WebToPay::ApiRequest
     end
   end
 
-  def encoded_query
-    @encoded_query ||= Base64.encode64(query).gsub("\n", '').gsub('/', '+').gsub('_', '-')
+  def data # encoded query
+    @data ||= Base64.encode64(query).gsub("\n", '').gsub('/', '+').gsub('_', '-')
+  end
+
+  def url
+    "https://www.mokejimai.lt/pay?#{query}&data=#{CGI::escape data}&sign=#{CGI::escape sign}"
   end
 
   def sign
-    Digest::MD5.hexdigest(encoded_query + @sign_password)
+    Digest::MD5.hexdigest(data + @sign_password)
+  end
+
+  def to_key
   end
 end
