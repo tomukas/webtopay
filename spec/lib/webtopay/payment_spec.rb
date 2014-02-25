@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe WebToPay::Payment do
-  subject{ WebToPay::ApiRequest.new(payment_data, sign_password: sign_password) }
+  subject{ WebToPay::Payment.new(payment_data, sign_password: sign_password) }
   let(:sign_password){ 'a1b2c3d4e5a1b2c3d4e5a1b2c3d4e5'}
   let(:payment_data) {
     {
