@@ -3,6 +3,7 @@ require 'webtopay/configuration'
 require 'webtopay/payment'
 require 'webtopay/api_response'
 require 'webtopay_controller'
+require 'webtopay_helper'
 
 module WebToPay
   API_VERSION = '1.6'
@@ -18,3 +19,4 @@ module WebToPay
 end
 
 ActionController::Base.send(:include, WebToPayController)
+ActionView::Base.send(:include, WebToPayHelper)
