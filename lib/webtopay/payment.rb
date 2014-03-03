@@ -8,7 +8,7 @@ class WebToPay::Payment
 
   def initialize(params = {}, user_params = {})
     self.version = WebToPay::API_VERSION
-    self.projectid = WebToPay.config.project_id
+    self.projectid = user_params[:projectid] || WebToPay.config.project_id
     @sign_password = user_params[:sign_password] || WebToPay.config.sign_password
 
     params.each_pair do |field, value|
@@ -33,7 +33,7 @@ class WebToPay::Payment
   end
 
   def url
-    "https://www.mokejimai.lt/pay?#{query}&data=#{CGI::escape data}&sign=#{CGI::escape sign}"
+    "https://www.mokejimai.lt/pay?data=#{CGI::escape data}&sign=#{CGI::escape sign}"
   end
 
   def sign

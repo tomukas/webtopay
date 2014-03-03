@@ -89,6 +89,7 @@ TODO
 
 1. Write more clear documentation with real examples
 2. Write unit tests for each billing method (requires some testing data from https://www.webtopay.com/)
+3. Validate Api request by ss2 param
 
 ===========
 Copyright (c) 2009 Kristijonas Urbaitis, released under the MIT license
