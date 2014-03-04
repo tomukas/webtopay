@@ -13,16 +13,18 @@ module WebToPayController
   end
   
   def webtopay
-    begin
-      api_response = WebToPay::ApiResponse.new(request.query_string, {
-          :projectid      => WebToPay.config.project_id,
-          :sign_password  => WebToPay.config.sign_password
-      })
+    api_response = WebToPay::Response.new( params.slice(:data, :ss1, :ss2) )
+    expected_params = webtopay_expected_params( api_response.query_params.clone )
+    if not api_response.valid?(expected_params)
+      webtopay_failed_validation_response(api_response)
+    end
+  end
 
-      api_response.validate!
+  def webtopay_expected_params(webtopay_params)
+    {}
+  end
 
-    rescue WebToPay::Exception => e
-      render :text => e.message, :status => 500
-    end 
+  def webtopay_failed_validation_response(api_response)
+    raise api_response.errors.first
   end
 end

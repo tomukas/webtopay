@@ -38,6 +38,32 @@ Or you can add this (it does the same as above):
   before_filter :webtopay, only:[:controller_method1, :controller_method2] ...
 ```
 
+## Response validation
+
+By default only projectid and sign fields are validated. It is highly recommended to check that order specific params
+(like paid money amount) also matches params in response.
+To specify which fields you want to validate add this method in controller:
+
+```ruby
+  def webtopay_expected_params(webtopay_params) # webtopay_params is a hash returned from mokejimai.lt
+    order = Order.find(webtopay_params[:orderid])
+    { # hash keys should be the same as in mokejimai.lt specification
+      p_email: order.user_email,
+      amount: order.price_in_cents,
+      # ... and any other fields that we save in database
+    }
+  end
+```
+
+## On invalid response
+
+If response is invalid then exception will be raised. To change this behavior add this to controller:
+```ruby
+  def webtopay_failed_validation_response(api_response) # api_response is instance of WebToPay::Response
+    render json: api_response.errors # default behavior: raise api_response.errors.first
+  end
+```
+
 ## Examples
 
 These code slices will protect your controller actions, which work with webtopay.com billing, against forgeries.
@@ -57,6 +83,7 @@ These code slices will protect your controller actions, which work with webtopay
     render :text => "ok" # it sends successful answer to webtopay.com crawler
   end
 ```
+
 
 ### Payment form
 
@@ -83,6 +110,10 @@ Then in your controller
   end
 ```
 
+Or if need only order confirmation button (no action in controller needed:
+```erb
+  <%= webtopay_confirm_button("Buy", {amount: 2000, p_name: "Jonas"})
+```
 
 TODO
 ===========
@@ -90,6 +121,7 @@ TODO
 1. Write more clear documentation with real examples
 2. Write unit tests for each billing method (requires some testing data from https://www.webtopay.com/)
 3. Validate Api request by ss2 param
+4. Check if mikro payments works well
 
 ===========
 Copyright (c) 2009 Kristijonas Urbaitis, released under the MIT license

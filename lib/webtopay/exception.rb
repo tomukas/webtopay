@@ -1,5 +1,5 @@
 module WebToPay
-  class Exception < ::Exception
+  class Exception < ::StandardError
     # Missing field.
     E_MISSING = 1
 
@@ -22,5 +22,15 @@ module WebToPay
     E_SMS_ANSWER = 7
 
     attr_accessor :code, :field_name
+
+    def as_json(options = {})
+      {
+        error: {
+          message: message,
+          field_name: field_name,
+          code: code
+        }
+      }
+    end
   end
 end

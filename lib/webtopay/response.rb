@@ -58,7 +58,7 @@ class WebToPay::Response
   }
 
   attr_reader :query, :user_data, :errors, :project_id
-  attr_accessor :data, :ss1, :ss2, :errors
+  attr_accessor :data, :ss1, :ss2
 
   def initialize(params, user_params = {})
     params.each_pair do |field, value|
@@ -71,7 +71,7 @@ class WebToPay::Response
 
   def query
     @query ||= begin
-      data = self.data
+      data = self.data || ''
       Base64.decode64( data.gsub('-', '+').gsub('_', '/') )
     end
   end
@@ -92,12 +92,16 @@ class WebToPay::Response
         projectid: @project_id
     }.merge(params)
 
-    valid = ss1_valid?
-    valid &&= custom_params_valid?(params)
+    valid = custom_params_valid?(params)
+    valid &&= ss1_valid?
     valid &&= all_required_fields_included?
     valid &&= no_blacklisted_fields_included?
     valid &&= payment_status_valid?
     valid
+  end
+
+  def validate!(params = {})
+    raise errors.first unless valid?(params)
   end
 
   def type
@@ -124,14 +128,16 @@ class WebToPay::Response
   def custom_params_valid?(params)
     valid = true
     params.each_pair do |key, expected_value|
-      query_value = query_params[key]
-      if expected_value.is_a?(Integer)
-        query_value = query_value.to_i
-      elsif expected_value.is_a?(Float)
-        query_value = query_value.to_f
+      query_value = query_params[key].presence
+      if query_value.is_a?(String)
+        if expected_value.is_a?(Integer)
+          query_value = query_value.to_i
+        elsif expected_value.is_a?(Float)
+          query_value = query_value.to_f
+        end
       end
       if query_value != expected_value
-        @errors << WebToPay::Exception.new("#{key} param is invalid. Expected \"#{expected_value}\", but was \"#{query_value}\"")
+        @errors << WebToPay::Exception.new("\"#{key}\" is invalid. Expected \"#{expected_value}\", but was \"#{query_value}\"")
         valid = false
       end
     end
@@ -173,7 +179,7 @@ class WebToPay::Response
   end
 
   def payment_status_valid?
-    if macro? && query_params[:status].to_i != 1
+    if makro? && query_params[:status].to_i != 1
       e = WebToPay::Exception.new("Returned transaction status is #{query_params[:status]}, successful status should be 1.")
       e.code = WebToPay::Exception::E_INVALID
       @errors << e
