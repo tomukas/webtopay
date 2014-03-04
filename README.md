@@ -26,16 +26,34 @@ WebToPay.configure do |config|
 end
 ```
 
-## Usage
+## Basic usage
 
 Add this to your controller:
 ```ruby
-  webtopay :controller_method1, :controller_method2 ...
+  webtopay :confirm_order, ...
+
+  def confirm_order
+    # do some ordering stuff here...
+    render text: "ok" # response with value "ok" is necessary
+  end
 ```
 
-Or you can add this (it does the same as above):
+Add this in your view:
+Or if need only order confirmation button (no action in controller needed:
+```erb
+  <%= webtopay_confirm_button("Buy", {amount: 2000, p_name: "Jonas", callback_url: confirm_order_url, ... })
+```
+
+
+## Advanced usage
+
+If you want more control you can use this:
 ```ruby
   before_filter :webtopay, only:[:controller_method1, :controller_method2] ...
+```
+instead of:
+```ruby
+  webtopay :controller_method1, :controller_method2 ...
 ```
 
 ## Response validation
