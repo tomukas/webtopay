@@ -56,7 +56,7 @@ instead of:
   webtopay :controller_method1, :controller_method2 ...
 ```
 
-## Response validation
+### Response validation
 
 By default only projectid and sign fields are validated. It is highly recommended to check that order specific params
 (like paid money amount) also matches params in response.
@@ -73,7 +73,7 @@ To specify which fields you want to validate add this method in controller:
   end
 ```
 
-## On invalid response
+### On invalid response
 
 If response is invalid then exception will be raised. To change this behavior add this to controller:
 ```ruby
@@ -81,27 +81,6 @@ If response is invalid then exception will be raised. To change this behavior ad
     render json: api_response.errors # default behavior: raise api_response.errors.first
   end
 ```
-
-## Examples
-
-These code slices will protect your controller actions, which work with webtopay.com billing, against forgeries.
-
-### Usage for MICRO and MACRO billing on controller.
-
-```ruby
-  webtopay :activate_user, :confirm_cart # You can add here as many actions as you want
-
-  def activate_user
-    # write here code which do some stuff
-    render :text => "Your user has been successfully activated. Thank you!" # it sends SMS answer
-  end
-  
-  def confirm_cart
-    # write here code which do some stuff
-    render :text => "ok" # it sends successful answer to webtopay.com crawler
-  end
-```
-
 
 ### Payment form
 
@@ -132,6 +111,27 @@ Or if need only order confirmation button (no action in controller needed:
 ```erb
   <%= webtopay_confirm_button("Buy", {amount: 2000, p_name: "Jonas"})
 ```
+
+## Examples
+
+These code slices will protect your controller actions, which work with webtopay.com billing, against forgeries.
+
+### Usage for MICRO and MACRO billing on controller.
+
+```ruby
+  webtopay :activate_user, :confirm_cart # You can add here as many actions as you want
+
+  def activate_user
+    # write here code which do some stuff
+    render :text => "Your user has been successfully activated. Thank you!" # it sends SMS answer
+  end
+  
+  def confirm_cart
+    # write here code which do some stuff
+    render :text => "ok" # it sends successful answer to webtopay.com crawler
+  end
+```
+
 
 TODO
 ===========
