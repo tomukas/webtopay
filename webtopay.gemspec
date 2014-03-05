@@ -19,11 +19,11 @@ Gem::Specification.new do |s|
   s.executables   = `git ls-files -- bin/*`.split("\n").map{ |f| File.basename(f) }
   s.require_paths = ["lib"]
 
-  s.add_development_dependency "sqlite3", '~> 1.3.8'
-  s.add_development_dependency "rails", '~> 4.0.0'
-  s.add_development_dependency 'factory_girl_rails', '~> 4.3.0'
-  s.add_development_dependency 'database_cleaner', '~> 1.2.0'
-  s.add_development_dependency "rspec", '~> 2.14.1'
-  s.add_development_dependency "rspec-rails", '~> 2.14.1'
+  s.add_development_dependency "sqlite3", '~> 1.3', '>= 1.3.8'
+  s.add_development_dependency "rails", '~> 4.0', '>= 4.0.0'
+  s.add_development_dependency 'factory_girl_rails', '~> 4.3', '>= 4.3.0'
+  s.add_development_dependency 'database_cleaner', '~> 1.2', '>= 1.2.0'
+  s.add_development_dependency "rspec", '~> 2.14', '>= 2.14.1'
+  s.add_development_dependency "rspec-rails", '~> 2.14', '>= 2.14.1'
 end
 
