@@ -11,7 +11,7 @@ This gem could be integrated with both billing types - MACRO (VISA, MasterCard, 
 Add to your gemfile:
 
 ```ruby
-gem "webtopay", github: 'bloomrain'
+gem "webtopay", '~> 1.6'
 ```
 
 ## Configuration

@@ -1,6 +1,7 @@
 class WebToPay::Payment
   ATTRIBUTES = [:projectid, :orderid, :lang, :amount, :currency, :accepturl, :cancelurl, :callbackurl,
                 :country, :paytext, :p_email, :p_name, :p_surname, :payment, :test, :version]
+  UNDERSCORE_MAPPINGS = {pname: :p_name, pemail: :p_email, psurname: :p_surname}
   attr_accessor *ATTRIBUTES
 
   extend ActiveModel::Naming
@@ -12,7 +13,9 @@ class WebToPay::Payment
     @sign_password = user_params[:sign_password] || WebToPay.config.sign_password
 
     params.each_pair do |field, value|
-      self.public_send("#{field}=", value)
+      field_name = field.to_s.downcase.gsub('_', '').to_sym
+      field_name = UNDERSCORE_MAPPINGS[field_name] || field_name
+      self.public_send("#{field_name}=", value)
     end
   end
 
