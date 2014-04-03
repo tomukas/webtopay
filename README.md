@@ -11,7 +11,7 @@ This gem could be integrated with both billing types - MACRO (VISA, MasterCard, 
 Add to your gemfile:
 
 ```ruby
-gem "webtopay", '~> 1.6'
+gem "webtopay", '1.6.1'
 ```
 
 ## Configuration
