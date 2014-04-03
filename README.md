@@ -101,7 +101,7 @@ Then in your controller
   class ProductsController < ApplicationController
     def order
       # do some order stuff here ...
-      @payment = WebToPay::Payment(params[:web_to_pay_payment])
+      @payment = WebToPay::Payment.new(params[:web_to_pay_payment])
       redirect_to @payment.url
     end
   end
