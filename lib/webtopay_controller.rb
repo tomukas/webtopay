@@ -12,8 +12,8 @@ module WebToPayController
     controller.extend(ClassMethods)
   end
   
-  def webtopay
-    api_response = WebToPay::Response.new( params.slice(:data, :ss1, :ss2) )
+  def webtopay (args={})
+    api_response = WebToPay::Response.new( params.slice(:data, :ss1, :ss2), args )
     expected_params = webtopay_expected_params( api_response.query_params.clone )
     if not api_response.valid?(expected_params)
       webtopay_failed_validation_response(api_response)
