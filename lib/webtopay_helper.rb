@@ -1,10 +1,10 @@
 module WebToPayHelper
-  def webtopay_confirm_button(text, params_or_payment, button_options = {}, form_options = {})
+  def webtopay_confirm_button(text, params_or_payment, button_options = {}, form_options = {}, sign_password = nil)
     fields = { :lang => 'LIT', :currency => 'LTL', :projectid => WebToPay.config.project_id, :test => 0 }
 
     if params_or_payment.is_a?(Hash)
       fields = fields.merge(params_or_payment)
-      payment = WebToPay::Payment.new(fields, sign_password: WebToPay.config.sign_password)
+      payment = WebToPay::Payment.new(fields, sign_password: sign_password || WebToPay.config.sign_password)
     else
       payment = params_or_payment
       fields.each_pair do |field, value|
