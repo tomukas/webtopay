@@ -16,7 +16,7 @@ module WebToPayHelper
       html = ''
       html << hidden_field_tag(:data, payment.data)
       html << hidden_field_tag(:sign, payment.sign)
-      html << submit_tag(text, button_options)
+      html << image_submit_tag(text, button_options)
       html.html_safe
     end
   end
